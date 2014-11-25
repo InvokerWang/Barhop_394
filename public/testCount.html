@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC 
+	"-//W3C//DTD XHTML 1.0 Transitional//EN"  
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+<head>        
+	<title>jQueryTEST</title>        
+	<script src="http://ajaxjs/jquery1.3.2.js"></script> 
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>   
+	<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    
+	<script>        
+	$(document).ready(function(){        
+		$("#add").click(function(){        
+			var n=$("#num").html();      
+			var num=parseInt(n)+1;         
+			if(num==0){alert("cc");}      
+			$("#num").html(num);    });        
+			$("#jian").click(function(){        
+				var n=$("#num").html();      
+				var num=parseInt(n)-1;           
+				if(num==0){alert("不能为0!"); return}      
+				$("#num").html(num);      
+			});        
+		});        
+	</script>        
+</head>
+<body>
+	<div id="num">3</div>
+	<input type="button" id="add" value="+" />
+	<input type="button" id="jian" value="-" />
+</body>
+</html>

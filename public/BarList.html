@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- files to be loaded first -->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700' rel='stylesheet' type='text/css' />
+        <script src="https://www.parsecdn.com/js/parse-1.2.18.min.js" type="text/javascript"></script>
+        <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <title>Bar Hop</title>
+        <link rel="stylesheet" href="CSS/mobile.css" media="handheld,only screen and (max-device-width:480px)" />
+        <link rel="stylesheet" href="CSS/core.css" media="screen" />
+        <link rel="stylesheet" href="Plugins/FontAwesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="Plugins/Bootstrap/css/bootstrap.min.css">
+        
+        <script type="text/javascript" src="JS/autocomplete.js"></script>
+        <script type='application/javascript' src='JS/fastclick.js'></script>
+        <script type="text/javascript" src="Plugins/Bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="JS/timeline.js"></script>
+        <script type="text/javascript" src="JS/parse.js"></script>
+        <script type="text/javascript" src="JS/snap.js"></script>
+
+        <!--  parse connection and get data  -->
+        <script type="text/javascript">
+           Parse.initialize("LOuRF1Ii3g5o4strZmXPKuTKx2KojiZsE5TRHTNe", "5Hyjb0QwQzP0H3VmpOiWRrJ5DgAJUapzBMSTaADV");
+            var product = Parse.Object.extend("Product");
+
+            var query = new Parse.Query('Product');
+            //var date = new Date(Date.now());
+            //query.lessThan("updatedAt", Date.now());
+            //query.ascending("TimeStamp");
+            //query.equalTo("name", "Leo");
+            var barListId = [];
+            var friendsListId = [];
+            var onClickId = [];
+            query.find({
+              success: function(results) {
+                
+                for (var i = results.length-1; i >= 0; i--) { 
+                    var q = $('#backend');
+                    var theme = results[i].get('theme');
+                    var time = results[i].get('time');
+                    var address = results[i].get('address');
+                    var description = results[i].get('description');
+                    var name = results[i].get('name');
+                    var date = results[i].get('date');
+                    var invited = []; 
+                    invited = results[i].get('invited');
+                    var invitedNum = invited.length;
+
+                    barListId[i] = "barListDiv" + i;
+                    friendsListId[i] = "friendsList" + i;
+                    onClickId[i] = i;
+                    //console.log(invitedNum);
+                    
+                    //alert(friendsListId[i]);
+                    // console.log(tripdate);
+                    q.append('<div class="barList transparent-form" style="margin-top:15px;"><div id="' + barListId[i]+ '"><form id="barList-form" class="form-horizontal"><p class="end">' + address + '<a href="./BarMap.html" class="goToMap"><span margin-left="50px" style="color:red"><i class="fa fa-map-marker"></i> Go to map</span></a></p><p class="start"><span style="color:blue">Party name: </span>' + name + '<span style="float: right; margin-right:25px;">Next Bar</span></p><p class="date"><span style="color:blue">Party Date: </span>' + date + '<a href="#" data-toggle="modal" data-target="#modifyBarhop" class="modifyBar-btn-small" style="color:#08cbc4; float: right; margin-right:10px; font-weight:450;"></a></p><p class="time"><span style="color:blue">Start Time: </span>' + time + ' PM</p><p class="time"><span style="color:blue">End Time: </span>12:00 PM<span style="margin-left:25%;">Leaving Time:</span><span style="float: right; margin-right:10px; color:red;"></span></p><p class="driver"><span style="color:blue">Number of members: </span>' + invitedNum + '<button class="showNextBar" style="float: right; margin-right:10px;"><span margin-left="30px" style="color:red; float: right; margin-right:10px;">Leaving Now!</span></button></p><p class="seats"><span style="color:blue">Check-in numbers: </span>0 / ' + invitedNum + '</p><a class="more" href="#" onclick="listShow(this)" id="' + onClickId[i] + '">show member list</a></form></div></div>');
+
+                    
+
+                    q.append('<div class="transparent-form"><div class="filter" id="' + friendsListId[i] + '"><form id="friendsList-form" class="form-horizontal"></form></div></div>');
+
+                    var friendsArray = [];
+                    var q2 = $('#' + friendsListId[i] + '');
+                    for (var j = 0; j < invitedNum; j++) {
+                      friendsArray[j] = invited[j];
+                      var eachFriendDiv = '<a href="#" data-toggle="modal" data-target="#count1" class="people-btn-small"><span class="btn-symbol-small" id="icon_person1"><i class="fa fa-user fa-lg"></i></span><span class="btn-text-small" id="person1" style="margin-left:30%; color:red;">' + friendsArray[j] + '</span></a>';
+                        q2.append(eachFriendDiv);
+                      //alert(friendsArray[j]);
+                    }
+
+                  }
+
+
+                // for (var i=0; i < results.length; i++){
+                  
+                //   var tripdate = results[i].get('Date');
+                //   tripdate.setHours(tripdate.getHours()+5);
+                //   // console.log(tripdate);
+                //   tripdate = String(tripdate);
+                //   tripdate = tripdate.substr(0, 15);
+                //   var time = results[i].get('TravelTime');
+                //   var am_pm = results[i].get('DepartureAMPM');
+                //   time = time.concat(" " + am_pm);
+                //   var driver = results[i].get('Name');
+                //   var email = results[i].get('Email');
+                //   var seats = results[i].get('OpenSeats');
+                //   var cost = results[i].get('TripCost');
+                //   var costtype = results[i].get('CostType');
+                //   var destination = results[i].get('Destination');
+                //   var dest = destination.split(',').slice(0,3).join();
+                //   var start = results[i].get('StartAddress');
+                //   var star = start.split(',').slice(0,2).join();
+                //   var end = results[i].get('EndAddress');
+                //   var truncDate = String(tripdate);
+                //   truncDate = truncDate.substr(0, 15);
+                //   counter += 1;
+                //   // var btn1 = "<a href='#'><i class='fa fa-link btn-email'>  connect with driver</i></a>";
+                //   var message="Hi "+driver+",%0D%0DI'd like to join your ride from "+start.split(',').slice(0,3).join()+" to "+destination.split(',').slice(0,3).join()+" on "+truncDate +" at " + time +". Please let me know if I can join.%0D%0DThanks,%0D";
+                //   var btn2 = '<a href="mailto:'+email+'?subject=RideTogether - Id like to join your ride!&body='+message+'" class="join"><span><i class="fa fa-share-square-o"></i> join ride</span></a>';
+                //   // var DateTime = date + " " + results[i].get('TravelTime'); 
+                //   q.append('<div class="ride" data-date="'+tripdate+'" data-time="'+time+'" data-start="'+start+'" data-end="'+destination+'" data-attribute="'+results[i].id+ '"><div class="count">'+counter+'</div><div class="content-shown"><p class="end">'+dest+'<span>'+btn2+'</span></p><p class="start"><span>Leaving From: </span>'+start+'</p><p class="date"><span>Trip Date: </span>'+tripdate+'</p><p class="time"><span>Time: </span>'+time+'</p><p class="driver"><span>Driver: </span>'+driver+'</p><p class="seats"><span>Available seats: </span>'+seats+'</p><p class="cost"><span>Trip Cost: </span>'+cost+' ('+costtype+')</p><a class="more">click to display more info</a></div><div class="timeline"><div class="waypoint"><div class="circle"></div><p>Start</p></div><div class="line line-drive"><div class="piece"></div><p></p></div><div class="waypoint"><div class="circle"></div><p>Arrive</p></div><div class="line line-dest"><div class="piece"></div><p></p></div><div class="waypoint"><div class="circle"></div><p>Leave</p></div><div class="line line-drive"><div class="piece"></div><p></p></div><div class="waypoint"><div class="circle"></div><p>End</p></div></div></div>');  
+                // },
+              },
+              error: function(error) {
+                console.log('error')
+              }
+            });
+
+
+
+
+
+
+
+
+            $(document).ready(function() {
+                //autoComplete();
+                //alert("start testing");
+            });
+
+          // FAST CLICK CODE
+           window.addEventListener('load', function() {
+                  FastClick.attach(document.body);
+              }, false);
+
+           function show() {
+              $( '#filter' ).toggle( 'slow' );
+              $('.icon').find('i').toggleClass('fa-chevron-down fa-chevron-up');
+           }
+
+           /**** List show ****/
+           function listShow(ele) {
+              var id = ele.id;
+              var divId = "friendsList" + id;
+              //alert(divId);
+              $('#' + divId + '').toggle('slow');
+              //document.getElementById('friendsListIdNum').toggle('slow');
+           }
+
+           function list2Show() {
+              $('#friendsList2').toggle('slow');
+              //document.getElementById('friendsList2').toggle('slow');
+           }
+
+           /*** next bar show ****/
+           
+           function nextBarShow() {
+              $('#barListDiv').replaceWith('<form id="barList-form" class="form-horizontal"><p class="end">Prairie Moon<a href="./BarMap.html" class="goToMap"><span margin-left="50px" style="color:red"><i class="fa fa-map-marker"></i> Go to map</span></a></p><p class="start"><span style="color:blue">Hoster: </span>Tony<span style="float: right; margin-right:25px;">Next Bar</span></p><p class="date"><span style="color:blue">Party Date: </span>07/11/2014<a href="#" data-toggle="modal" data-target="#modifyBarhop" class="modifyBar-btn-small" style="color:#08cbc4; float: right; margin-right:10px; font-weight:450;"></a></p><p class="time"><span style="color:blue">Start Time: </span>7:00 PM</p><p class="time"><span style="color:blue">End Time: </span>12:00 PM<span style="margin-left:25%;">Leaving Time:</span><span style="float: right; margin-right:10px; color:red;"></span></p><p class="driver"><span style="color:blue">Number of members: </span>7<button class="showNextBar" style="float: right; margin-right:10px;"><span margin-left="30px" style="color:red; float: right; margin-right:10px;">Leaving Now!</span></button></p><p class="seats"><span style="color:blue">Check-in numbers: </span>4 / 7</p><a class="more" href="#" onclick="listShow()">show member list</a></form>');
+
+              $('#friendsListDiv').replaceWith('<div class="filter" id="friendsList"><form id="friendsList-form" class="form-horizontal"><a href="#" data-toggle="modal" data-target="#count1" class="people-btn-small"><span class="btn-symbol-small" id="icon_person1"><i class="fa fa-user fa-lg"></i></span><span class="btn-text-small" id="person1" style="margin-left:30%; color:red;">Tony</span></a><a href="#" data-toggle="modal" data-target="#count2" class="people-btn-small"><span class="btn-symbol-small" id="icon_person2"><i class="fa fa-user fa-lg"></i></span><span class="btn-text-small" id="person2" style="margin-left:30%; color:red;">Michael</span></a><a href="#" data-toggle="modal" data-target="#count2" class="people-btn-small"><span class="btn-symbol-small" id="icon_person2"><i class="fa fa-user fa-lg"></i></span><span class="btn-text-small" id="person2" style="margin-left:30%; color:red;">Marc</span></a></form></div>');
+           }
+
+           /*****  Drink num calculation  *****/
+          $(document).ready(function(){        
+              $("#add1").click(function(){        
+                var n1=$("#num1").html();      
+                var num1=parseInt(n1)+1;         
+                if(num1==0){alert("cc");}      
+                $("#num1").html(num1);    
+              });
+
+              $("#jian1").click(function(){        
+                var n1=$("#num1").html();      
+                var num1=parseInt(n1)-1;           
+                if(num1==-1){alert("can not be -1!"); return}      
+                $("#num1").html(num1);      
+              });        
+         
+              $("#add2").click(function(){        
+                var n2=$("#num2").html();      
+                var num2=parseInt(n2)+1;         
+                if(num2==0){alert("cc");}      
+                $("#num2").html(num2);    
+              });        
+              
+              $("#jian2").click(function(){        
+                var n2=$("#num2").html();      
+                var num2=parseInt(n2)-1;           
+                if(num2==-1){alert("can not be -1!"); return}      
+                $("#num2").html(num2);      
+              });
+
+              $("#add3").click(function(){        
+                var n3=$("#num3").html();      
+                var num3=parseInt(n3)+1;         
+                if(num3==0){alert("cc");}      
+                $("#num3").html(num3);    
+              });        
+              
+              $("#jian3").click(function(){        
+                var n3=$("#num3").html();      
+                var num3=parseInt(n3)-1;           
+                if(num3==-1){alert("can not be -1!"); return}      
+                $("#num3").html(num3);      
+              });
+
+               $("#add4").click(function(){        
+                var n4=$("#num4").html();      
+                var num4=parseInt(n4)+1;         
+                if(num4==0){alert("cc");}      
+                $("#num4").html(num4);    
+              });        
+              
+              $("#jian4").click(function(){        
+                var n4=$("#num4").html();      
+                var num4=parseInt(n4)-1;           
+                if(num4==-1){alert("can not be -1!"); return}      
+                $("#num4").html(num4);      
+              });
+
+
+              $("#checkin_btn1").click(function(){
+                 $("#checkin_btn1").text("Checked");
+                 $("#icon_person1").addClass("btn-symbol-small_checkin");
+                 $("#person1").css("color", "blue");
+                 $("#checkin").text("Enjoy your BarHop !");
+
+              });
+            }); 
+
+
+          // log out
+          function logout() {
+              Parse.User.logOut();
+              window.location.replace("rides.html");
+          }
+
+          // autocomplete for login modal
+          function autoComplete() {
+              autoCompleteStart = new google.maps.places.Autocomplete(
+                  (document.getElementById('start')),
+                  {types: []});
+              google.maps.event.addListener(autoCompleteStart, 'place_changed', function() {
+                  var startPlace = autoCompleteStart.getPlace();
+                  document.getElementById("startpointlat").value = startPlace.geometry.location.lat();
+                  document.getElementById("startpointlng").value = startPlace.geometry.location.lng();
+                  origin = "(" + document.getElementById("startpointlat").value  + ", " + document.getElementById("startpointlng").value + ")";   
+                  console.log(origin);      
+              });
+
+              autoCompleteEnd = new google.maps.places.Autocomplete(
+                 (document.getElementById('end')),
+                 {types: []});
+              google.maps.event.addListener(autoCompleteEnd, 'place_changed', function() {
+                  var endPlace = autoCompleteEnd.getPlace();
+                  document.getElementById("endpointlat").value = endPlace.geometry.location.lat();
+                  document.getElementById("endpointlng").value = endPlace.geometry.location.lng();
+                  destination = "(" + document.getElementById("endpointlat").value  + ", " + document.getElementById("endpointlng").value + ")";   
+                  console.log(destination);      
+              });
+          }
+        </script>
+    </head>
+
+
+    <body class="fancy">
+        <!-- SIDEBAR PANEL -->
+        <div class="snap-drawers">
+            <div class="snap-drawer snap-drawer-right">
+                <div>
+                    <div class="avatar"></div>
+                    <div id="profile"></div>
+                    <div class="links">
+                      <ul>
+                          <li><a href="index.html">Home</a></li>
+                          <li><a href="#" id="post" onclick='snapper.close();' data-toggle="modal" data-target="#postride">Post a BarHop</a></li>
+                          <li><a href="#" id="logout" onclick="logout();">Logout</a></li>
+                      </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BODY CONTENT -->
+        <div id="wrapper" class="snap-content">
+            
+            <!-- HEADER -->
+            <div class="header">
+              <h1> <span id="cursive" class="cursive">BarHop</span> 
+                <span>
+                  <a href="index.html" id="back"><i class="fa fa-chevron-left fa-lg"></i></a>
+                  <a href="#" id="menu"><i class="fa fa-bars fa-lg"></i></a>
+              </h1>     
+            </div>
+
+            <!-- REGISTERED RIDE NOTIFICATON -->
+            <div id="notification">
+              <div id="submit">
+                <p><span><i class="fa fa-check"></i>  Barhop reservation successful</span></p>
+                <p><span><i class="fa fa-spinner fa-spin"></i>  Pending driver confirmation</span></p>
+              </div>
+            </div>
+
+            <!-- Test Barhop from backend -->
+            <div id="backend" style="margin-top:45px;"></div>
+            
+            <!-- AVAILABLE BarHop LIST -->
+          </div>
+
+
+        <!--  Modify the BarHop pop up page  -->
+        <div class="modal fade" id="modifyBarhop" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                <!-- BODY -->
+                    <!--  bar nearby list  -->
+                    <div>
+                        <label>Next Bar Will be</label>
+                        
+                            <select id="barNearbyList" style="margin-left: 5px; margin-top:10px" name="barNearbyList">
+                                <option>Ward Eight</option>
+                                <option>Bar Louie</option>
+                                <option>World of Beer</option>
+                                <option>Tommy Nevin's Pub</option>
+                                <option>BlueStone</option>
+                            </select>
+                        
+                    </div>
+
+
+                    <!-- theme type -->
+                    <div>
+                        <label>Theme</label>
+                            <select id="theme" style="margin-left: 70px; margin-top:10px" name="theme">
+                                <option>Formal</option>
+                                <option>Casual</option>
+                                <option>Halloween</option>
+                                <option>Hawaii</option>
+                                <option>Retro</option>
+                            </select>
+                    </div>
+            
+                    <!-- Departure time -->
+                    <div class="form-group">
+                        <label for="departuretime" style="marigin-top:10px" class="col-sm-2 control-label">Leaving Time : </label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="time" name="txtDepartureTime" placeholder="ex: 8:00 pm">
+
+                          <!-- radio buttons -->
+                          <!-- <form>
+                              <fieldset data-role="controlgroup" data-type="horizontal">
+                                  <input type="radio" name="radio-choice-h-2" id="daytimeAM" value="AM" checked="checked">
+                                  <label for="daytimeAM">AM</label>
+                                  <input type="radio" name="radio-choice-h-2" id="daytimePM" value="PM">
+                                  <label for="daytimePM">PM</label>
+                              </fieldset>
+                          </form>
+ -->                    </div>
+                    </div>
+
+
+                    <!-- date -->
+                    <!-- <div class="form-group">
+                        <label for="date" class="col-sm-2 control-label">Date</label>
+                        <div class="col-sm-10">
+                          <input type="date" class="form-control" id="date" name="date" placeholder="Enter trip date">
+                        </div>
+                    </div>
+ -->
+                    <!-- description -->
+                    <!-- <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">Description</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                        </div>
+                    </div>
+ -->
+                    <!-- submit button -->
+                    <div id="inviteFriends">
+                        <center>
+                          <button href="#" data-toggle="modal" style="margin-right:10%; margin-top:10px" data-target="#friendsListPage" class="btn btn-default">Invite Friends</button>
+                          <button class="btn btn-default" style="margin-right:10%; margin-buttom: 10px; margin-top:10px" data-dismiss="modal" onclick="nextBarShow()">Go !</button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--  invite Friends list pop up page  -->
+        <div class="modal fade" id="friendsListPage" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <h2>Friends List</h2>
+                  <form method="post" action="">
+                    <fieldset data-role="controlgroup" data-iconpos="right">
+                      <input type="checkbox" name="interest" id="eecs214" value="off">
+                      <label for="eecs214">Tony</label>
+                      <input type="checkbox" name="interest" id="eecs336" value="off">
+                      <label for="eecs336">Marc</label>
+                      <input type="checkbox" name="interest" id="eecs355" value="off">
+                      <label for="eecs355">Ajay</label>
+                      <input type="checkbox" name="interest" id="eecs361" value="off">
+                      <label for="eecs361">Kathryn</label>
+                      <input type="checkbox" name="interest" id="eecs394" value="off">
+                      <label for="eecs394">Michael</label>
+                      <!-- <input type="checkbox" name="interest" id="eecs453" value="off">
+                      <label for="eecs453">EECS 453</label> -->
+                    </fieldset>
+
+                      <div class="pos_right">
+                        <input id="clear_button" href="#" type="reset" data-inline="true" value="Clear">
+                        <!-- <a id="done_button" href="#" onclick="nextBarShow()" data-rel="close" class="modifyBar-btn-small">Post!</a> -->
+                        <button class="btn btn-default" data-dismiss="modal">Invite!</button>
+                      </div>      
+                  </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- count MODAL -->
+        <div class="modal fade" id="count1" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+
+                    <!-- BODY -->
+                    
+                    <!-- <p id="checkin"><span id="form-horizontal">You haven 't check in</span><p> -->
+                    <center> <button class="a-btn-small" id="checkin_btn1"><span id="cursive"> Please Check In Here </span></button> </center>
+
+                    <div>
+                    <span class="count" style="margin-left:15%;">Beers</span> 
+                    <span id="num1" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add1" value="+" style="margin-left:35%;margin-top:20px"/>
+                      <input type="button" id="jian1" value="-" style="margin-top:20px"/>
+                    </div>
+
+                    <div>
+                    <span class="count" style="margin-left:15%">Wine</span> 
+                    <span id="num2" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add2" value="+" style="margin-left:35%; margin-top:20px "/>
+                      <input type="button" id="jian2" value="-" style="margin-top:20px" />
+                    </div>
+
+                    
+                    <div>
+                    <span class="count" style="margin-left:15%">Shots</span> 
+                    <span id="num3" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add3" value="+" style="margin-left:35%; margin-top:20px "/>
+                      <input type="button" id="jian3" value="-" style="margin-top:20px" />
+                    </div>
+
+
+                    <div>
+                    <span class="count" style="margin-left:10%">Cocktail</span> 
+                    <span id="num4" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add4" value="+" style="margin-left:35%; margin-top:20px "/>
+                      <input type="button" id="jian4" value="-" style="margin-top:20px" />
+                    </div>
+
+                    <div style="margin-top:10px" class="col-sm-10">
+                        <input type="text" class="form-control" id="peoplecomments" name="peoplecomments" placeholder="ex: Comments Here">
+                    </div>
+                    
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-default" data-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="count2" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+
+                    <!-- BODY -->
+                    
+                    <!-- <p id="checkin"><span id="form-horizontal">You haven 't check in</span><p> -->
+                    <center> <button class="a-btn-small" id="checkin_btn1"><span id="cursive"> Please Check In Here </span></button> </center>
+
+                    <div>
+                    <span class="count" style="margin-left:15%">Beers</span> 
+                    <span id="num1" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add1" value="+" style="margin-left:35%;margin-top:20px"/>
+                      <input type="button" id="jian1" value="-" style="margin-top:20px"/>
+                    </div>
+
+                    <div>
+                    <span class="count" style="margin-left:15%">Wine</span> 
+                    <span id="num2" class="count" style="margin-left: 40%">0</span>
+                      <input type="button" id="add2" value="+" style="margin-left:35%; margin-top:20px "/>
+                      <input type="button" id="jian2" value="-" style="margin-top:20px" />
+                    </div>
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-default" data-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="count3" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+
+                    <!-- BODY -->
+                    
+                    <!-- <p id="checkin"><span id="form-horizontal">You haven 't check in</span><p> -->
+                    <center> <button class="a-btn-small" id="checkin_btn1"><span id="cursive"> Please Check In Here </span></button> </center>
+
+                    <div>
+                    <span class="count" style="margin-left:15%">Beers</span> 
+                    <span id="num1" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add1" value="+" style="margin-left:35%;margin-top:20px"/>
+                      <input type="button" id="jian1" value="-" style="margin-top:20px"/>
+                    </div>
+
+                    <div>
+                    <span class="count" style="margin-left:15%">Wine</span> 
+                    <span id="num2" class="count" style="margin-left:40%">0</span>
+                      <input type="button" id="add2" value="+" style="margin-left:35%; margin-top:15px "/>
+                      <input type="button" id="jian2" value="-" style="margin-top:15px" />
+                    </div>
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-default" data-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- LOGIN MODAL -->
+        <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="signin" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <!-- Email -->
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="usernamelogin" name="UserNameLogin"
+                                    placeholder="Email">
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="password" class="form-control" id="passwordlogin" name="PasswordLogin"
+                                    placeholder="Password">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-default" onclick="login()">Login</button>
+                        <div id="alert1" class="alert alert-danger">
+                            <strong>Error:</strong> Invalid username and password pair. Please try again.
+                        </div>
+                        <div id="alert2" class="alert alert-danger">
+                            <strong>Error:</strong> User's account isn't verified. Please look for an email from "no-reply@parseapps.com" and click the link in the email
+                        </div>
+                        <div id="alert3" class="alert alert-danger">
+                            <strong>Error:</strong> Invalid login parameters. Please check that you have registered for an account and that your email address has been verified. Then, try again.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- JAVASCRIPT FUNCTIONS -->
+        <script type="text/javascript">
+
+        var snapper = new Snap({
+            element: document.getElementById('wrapper'),
+            disable: 'left'
+          });
+
+
+          /*  create cross-browser event handler. */
+          var addEvent = function addEvent(element, eventName, func) {
+              if (element.addEventListener) {
+                  return element.addEventListener(eventName, func, false);
+              } else if (element.attachEvent) {
+                  return element.attachEvent("on" + eventName, func);
+              }
+          };
+
+          /* when the element with id 'open-left' is clicked, use the public snapper.open() method to slide the content div rightward, to reveal the LEFT menu */
+          addEvent(document.getElementById('menu'), 'click', function() {
+              snapper.open('right');
+          });
+
+          var menu = document.getElementById('menu');
+
+          menu.addEventListener('click', function(){
+              if( snapper.state().state=="right" ){
+                  snapper.close();
+              } else {
+                  snapper.open('right');
+              }
+
+          });
+
+
+        </script>
+        
+    </body>
+
+</html>

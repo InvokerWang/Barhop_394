@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- files to be loaded first -->
+        <link href='https://fonts.googleapis.com/css?family=Just+Me+Again+Down+Here|Open+Sans' rel='stylesheet' type='text/css' />
+        <script type="text/javascript" src="https://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+  
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+
+
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <title>PostTheEvent</title>
+        
+        <link href="CSS/mobile.css" rel="stylesheet" media="handheld,only screen and (max-device-width:480px)" />
+        <link href="CSS/core.css" rel="stylesheet" media="screen" />
+        <link rel="stylesheet" href="Plugins/FontAwesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="Plugins/Bootstrap/css/bootstrap.min.css">
+
+        <script type="text/javascript" src="JS/autocomplete.js"></script>
+        <script type='application/javascript' src='JS/fastclick.js'></script>
+        <script type="text/javascript" src="Plugins/Bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="JS/timeline.js"></script>
+        <script type="text/javascript" src="JS/parse.js"></script>
+
+        <script type="text/javascript">
+           Parse.initialize("LOuRF1Ii3g5o4strZmXPKuTKx2KojiZsE5TRHTNe", "5Hyjb0QwQzP0H3VmpOiWRrJ5DgAJUapzBMSTaADV");
+			var Prod = Parse.Object.extend("Product");
+            
+
+            var friend_invite = Parse.Object.extend("User");
+            var query_friend = new Parse.Query('User');
+            var friend_invite_id = [];
+            var friends_invite_list = $('#friend_list_fieldset');
+            var ss = $('#friend_list_fieldset').html();
+            query_friend.find({
+                success: function(results) {
+                
+                for (var i = results.length-1; i >= 0; i--) { 
+                    var friend_steam = results[i].get('username');
+                    // alert(friend_steam);
+                    ss += '<div class="ui-checkbox"><input type="checkbox" id="' + friend_steam + '" value="off"><label for="' + friend_steam +'">' + friend_steam  + '</label></div> ';
+                
+                    // friends_invite_list.append('<div class="ui-checkbox"><input type="checkbox" id="' + friend_steam + '" value="off"><label for="' + friend_steam +'">' + friend_steam  + '</label></div> ');
+                  }
+                  $('#friend_list_fieldset').html(ss);
+                  console.log($("#friend_list_fieldset").html());
+              },
+              error: function(error) {
+                console.log('error')
+              }
+
+            });
+
+            var origin;
+            var destination;  
+            var currentUser;
+            var isVerified;
+            var array = [];
+            var arrayIndex = 0;
+
+            function enroll(frm)
+		      {
+              
+              var name = $("input[name=txtName]").val();
+              var theme = $("#theme").val();
+			  var address = $("#address").val();
+			  var time = $("#time").val();
+			  var date = $("#date").val();
+			  var description = $("#description").val();
+              
+              
+
+             
+			  var Product = new Prod();
+			  
+				Product.set("name", name);
+				Product.set("theme", theme);
+				Product.set("address", address);
+				Product.set("time", time);
+				Product.set("date", date);
+				Product.set("description", description);
+                Product.set("invited", array);
+				Product.save(null, {
+				success: function(Product) {
+				alert("New Barhop successfully created !");
+					// Hooray! Let them use the app now.
+					array = [];
+                    arrayIndex = 0;
+                    window.location.href = "BarList.html";
+					},
+						error: function(Product, error) {
+						// Show the error message somewhere and let the user try again.
+						alert("Error: " + error.code + " " + error.message);
+					}
+					
+                });
+  
+            }
+
+            $(document).ready(function(){
+                $('#Tony').click(function(){
+                    myclick(this.id);
+                })
+                $('#Marc').click(function(){
+                    myclick(this.id);
+                })
+                $('#Ajay').click(function(){
+                    myclick(this.id);
+                })
+                $('#Kathryn').click(function(){
+                    myclick(this.id);
+                })
+                $('#Michael').click(function(){
+                    myclick(this.id);
+                })
+            })
+
+            function myclick(id){
+                array[arrayIndex] = id;
+                arrayIndex = arrayIndex + 1;
+            }
+
+		</script>
+		<header>
+		<div data-role="panel" id="formPanel" data-position="right" data-display="overlay">
+			<p>Let's go Barhop !</p>
+		
+		</div>
+		</header>
+    </head>
+
+    <body class="fancy"> 
+        
+        <!-- HEADER -->
+        <div class="header">
+          <h1>Create your Own Hop Event
+            <span>
+              <a href="index.html" id="back"><i class="fa fa-chevron-left fa-lg"></i></a>
+              <!-- <a href="#" id="menu"><i class="fa fa-bars fa-lg"></i></a> -->
+            </span>
+          </h1>     
+        </div>
+
+        <!-- POST RIDE FORM -->
+        <div class="signup">
+            <form action= "#formPanel" class="form-horizontal" role="form" id="postrideForm" >
+                <!-- name -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">Name of the Event</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="name" name="txtName" placeholder="Name">
+                    </div>
+                </div>
+
+                
+
+                <!-- theme type -->
+                <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">Theme</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="theme" name="theme">
+                            <option>Formal</option>
+                            <option>Casual</option>
+                            <option>Halloween</option>
+                            <option>Hawaii</option>
+                            <option>Retro</option>
+                        </select>
+                    </div>  
+                </div>
+
+                
+                
+                <!-- start address -->
+
+                <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">Start at</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="address" name="start-place">
+                            <option>Ward Eight</option>
+                            <option>Bar Louie</option>
+                            <option>World of Beer</option>
+                            <option>Tommy Nevin's Pub</option>
+                            <option>BlueStone</option>
+                        </select>
+                    </div>  
+                </div>
+
+
+
+                <!-- <div class="form-group">
+                    <label for="start" class="col-sm-2 control-label">Starting Point</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="address" name="txtStartAddress" placeholder="ex: 2255 Ridge Ave, Plex, Tech, etc">
+                      <input type="hidden" class="form-control" id="startpointlat" name="txtStartPointLat">
+                      <input type="hidden" class="form-control" id="startpointlng" name="txtStartPointLng">
+                    </div>
+                </div> -->
+				
+				 <!-- Departure time -->
+                <div class="form-group">
+                    <label for="departuretime" class="col-sm-2 control-label">Departure Time</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="time" name="txtDepartureTime" placeholder="ex: 1:00">
+
+                      <!-- radio buttons -->
+                      
+
+                    </div>
+                </div>
+
+
+                <!-- date -->
+                <div class="form-group">
+                    <label for="date" class="col-sm-2 control-label">Date</label>
+                    <div class="col-sm-10">
+                      <input type="date" class="form-control" id="date" name="date" placeholder="Enter trip date">
+                    </div>
+                </div>
+				 <!-- description -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                    </div>
+                </div>
+
+                
+                
+                <!-- submit button               原来的B的版本    --> 
+                <!-- <div class="form-group" id="submit-post">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <a href ="#formPanel" class="ui-btn ui-btn-inline" class="btn btn-default" onClick="enroll(this.form)">Invite Friends</a>
+                  </div>
+                </div> -->
+
+
+                <!-- submit button               muzhi 的版本    --> 
+
+
+                <div id="friends-list">
+                    <a href ="#overlayPanel" class="a-btn" class="btn btn-default">Invite Friends</a>
+                </div>
+
+                <div id="submit-post">
+                    <a href ="#formPanel" class="a-btn" class="btn btn-default" onClick="enroll(this.form)">Post Barhop</a>     
+                </div>
+
+            </form>
+        </div>
+		
+		
+		<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right"> 
+            <div class="background2">
+            <h2>Friends List</h2>
+                <form method="post" action="">
+                <fieldset id="friend_list_fieldset" data-role="controlgroup" data-iconpos="right">
+                    <input type="checkbox" id="Tony" value="off">
+                    <label for="Tony">Tony</label>
+                    <input type="checkbox" id="Marc" value="off">
+                    <label for="Marc">Marc</label>
+                    <input type="checkbox" id="Ajay" value="off">
+                    <label for="Ajay">Ajay</label>
+                    <input type="checkbox" id="Kathryn" value="off">
+                    <label for="Kathryn">Kathryn</label>
+                    <input type="checkbox" id="Michael" value="off">
+                    <label for="Michael">Michael</label>
+                <!-- <input type="checkbox" name="interest" id="eecs453" value="off">
+                <label for="eecs453">EECS 453</label> -->
+                </fieldset>
+
+                <div class="pos_right">
+                  <!-- <input id="clear_button" href="#" type="reset" data-inline="true" value="Clear"> -->
+                  <!-- <a id="done_button" href="./BarList.html" data-rel="close" class="ui-btn ui-btn-inline ui-shadow ui-corner-all">Invite !</a> -->
+                    <a id="done_button" data-rel="close" class="ui-btn ui-btn-inline ui-shadow ui-corner-all">Invite !</a>
+                </div>      
+              </form>
+            </div>
+        </div> 
+        
+    </body>
+</html>

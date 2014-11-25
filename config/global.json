@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "BarHop": {
+            "applicationId": "LOuRF1Ii3g5o4strZmXPKuTKx2KojiZsE5TRHTNe", 
+            "masterKey": "O4ZNXbMgGcFJG2shCg3kQbzaGz1czTvB7k73Tkwv"
+        }, 
+        "_default": {
+            "link": "BarHop"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.1"
+    }
+}
